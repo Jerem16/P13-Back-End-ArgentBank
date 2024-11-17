@@ -1,0 +1,359 @@
+swagger: "2.0"
+info:
+    title: Bank Argent API documentation
+    description: Contains all available API endpoints in this codebase
+    version: "1.0.0"
+    termsOfService: "http://swagger.io/terms/"
+host: localhost:3001
+basePath: /api/v1
+schemes:
+    - http
+paths:
+    /user/login:
+        post:
+            tags:
+                - User Module
+            summary: Login
+            description: API for Login
+            parameters:
+                - in: body
+                  name: body
+                  description: Login Payload
+                  required: true
+                  schema:
+                      $ref: "#/definitions/Login"
+            produces:
+                - application/json
+            responses:
+                "200":
+                    description: Login Successfully
+                    schema:
+                        $ref: "#/definitions/LoginResponse"
+                "400":
+                    description: Invalid Fields
+                "500":
+                    description: Internal Server Error
+    /user/signup:
+        post:
+            tags:
+                - User Module
+            summary: Signup
+            description: API for Signup
+            parameters:
+                - in: body
+                  name: body
+                  description: Signup Payload
+                  required: true
+                  schema:
+                      $ref: "#/definitions/User"
+            produces:
+                - application/json
+            responses:
+                "200":
+                    description: Signup Successfully
+                    schema:
+                        $ref: "#/definitions/ApiResponse"
+                "400":
+                    description: Invalid Fields
+                "500":
+                    description: Internal Server Error
+    /user/profile:
+        post:
+            security:
+                - Bearer: []
+            tags:
+                - User Module
+            summary: User Profile API
+            description: API for fetching a user profile
+            responses:
+                "200":
+                    description: User profile retrieved successfully
+                    schema:
+                        $ref: "#/definitions/ApiResponse"
+                "400":
+                    description: Invalid Fields
+                "500":
+                    description: Internal Server Error
+        put:
+            security:
+                - Bearer: []
+            tags:
+                - User Module
+            summary: User Profile API
+            description: API for updating a user profile
+            parameters:
+                - in: body
+                  name: body
+                  description: Update user profile attributes
+                  required: true
+                  schema:
+                      $ref: "#/definitions/UserProfile"
+            produces:
+                - application/json
+            responses:
+                "200":
+                    description: User profile retrieved successfully
+                    schema:
+                        $ref: "#/definitions/ApiResponse"
+                "400":
+                    description: Invalid Fields
+                "500":
+                    description: Internal Server Error
+    /{id}/accounts:
+        post:
+            security:
+                - Bearer: []
+            tags:
+                - Account Module
+            summary: User Accounts API
+            description: API for getting accounts
+            produces:
+                - application/json
+            parameters:
+                - in: header
+                  name: Authorization
+                  type: string
+                  required: true
+                  description: Bearer token for authentication.
+                - in: path
+                  name: id
+                  required: true
+                  type: string
+                  description: The user ID
+            responses:
+                "200":
+                    description: User accounts retrieved successfully.
+                    schema:
+                        type: object
+                        properties:
+                            status:
+                                type: number
+                            message:
+                                type: string
+                            body:
+                                type: array
+                                items:
+                                    $ref: "#/definitions/UserAccountDetail" # Correction ici
+                "401":
+                    description: The request requires user authentication.
+                    schema:
+                        $ref: "#/definitions/ApiErrorResponse"
+                "404":
+                    description: The requested resource could not be found on the server.
+                    schema:
+                        $ref: "#/definitions/ApiErrorResponse"
+                "500":
+                    description: Internal Server Error.
+                    schema:
+                        $ref: "#/definitions/ApiErrorResponse"
+    /{id}/{accountId}/transactions:
+        post:
+            security:
+                - Bearer: []
+            tags:
+                - Account Module
+            summary: Get a specific account and view transactions
+            description: Retrieve a specific user account along with its associated transactions
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  type: string
+                  description: The user ID
+                - in: path
+                  name: accountId
+                  required: true
+                  type: string
+                  description: The account ID
+            produces:
+                - application/json
+            responses:
+                "200":
+                    description: Transaction retrieved successfully
+                    schema:
+                        $ref: "#/definitions/UserAccountTransaction"
+                "401":
+                    description: The request requires user authentication.
+                    schema:
+                        $ref: "#/definitions/ApiErrorResponse"
+                "404":
+                    description: The requested transaction could not be found on the server.
+                    schema:
+                        $ref: "#/definitions/ApiErrorResponse"
+                "500":
+                    description: Internal Server Error.
+                    schema:
+                        $ref: "#/definitions/ApiErrorResponse"
+    /{id}/{accountId}/{transactionId}:
+        put:
+            security:
+                - Bearer: []
+            tags:
+                - Account Module
+            summary: User Account Transaction API
+            description: API for editing a transaction note and category.
+            produces:
+                - application/json
+            parameters:
+                - in: path
+                  name: accountId
+                  required: true
+                  type: string
+                  description: The ID of the account containing the transaction.
+                - in: path
+                  name: transactionId
+                  required: true
+                  type: string
+                  description: The ID of the transaction to edit.
+                - in: header
+                  name: Authorization
+                  type: string
+                  required: true
+                  description: Bearer token for authentication.
+                - in: body
+                  name: body
+                  description: Update a transaction note.
+                  required: true
+                  schema:
+                      type: object
+                      properties:
+                          note:
+                              type: string
+                              description: "Updated note"
+                          category:
+                              type: string
+                              description: "Updated category"
+            responses:
+                "200":
+                    description: Note modified successfully
+                    schema:
+                        type: object
+                        properties:
+                            status:
+                                type: number
+                            message:
+                                type: string
+                            body:
+                                $ref: "#/definitions/UserAccountTransaction"
+                "401":
+                    description: The request requires user authentication.
+                    schema:
+                        $ref: "#/definitions/ApiErrorResponse"
+                "404":
+                    description: The requested account or transaction could not be found on the server.
+                    schema:
+                        $ref: "#/definitions/ApiErrorResponse"
+                "500":
+                    description: Internal Server Error.
+                    schema:
+                        $ref: "#/definitions/ApiErrorResponse"
+definitions:
+    User:
+        properties:
+            email:
+                type: string
+                description: user email
+            password:
+                type: string
+                description: user password
+            firstName:
+                type: string
+                description: user first name
+            lastName:
+                type: string
+                description: user last name
+            userName:
+                type: string
+                description: user public name
+            id:
+                type: string
+                description: "user id"
+    Login:
+        properties:
+            email:
+                type: string
+                description: user email
+            password:
+                type: string
+                description: user password
+    ApiResponse:
+        type: object
+        properties:
+            status:
+                type: integer
+            message:
+                type: string
+            body:
+                type: object
+                properties:
+                    id:
+                        type: string
+                    email:
+                        type: string
+    LoginResponse:
+        type: object
+        properties:
+            token:
+                type: string
+    UserProfile:
+        type: object
+        properties:
+            userName:
+                type: string
+    UserAccount:
+        type: object
+        properties:
+            id:
+                type: string
+                description: "user id"
+            account:
+                type: array
+                items:
+                    $ref: "#/definitions/UserAccountDetail"
+    UserAccountDetail:
+        type: object
+        properties:
+            accountId:
+                type: string
+                description: "account id"
+            title:
+                type: string
+            amount:
+                type: string
+                format: currency
+            description:
+                type: string
+            transactions:
+                type: array
+                items:
+                    $ref: "#/definitions/UserAccountTransaction"
+    UserAccountTransaction:
+        type: object
+        properties:
+            transactionId:
+                type: string
+            date:
+                type: string
+                format: date-time
+            description:
+                type: string
+            amount:
+                type: string
+                format: currency
+            balance:
+                type: string
+                format: currency
+            type:
+                type: string
+            category:
+                type: string
+            note:
+                type: string
+                description: additional user notes
+    ApiErrorResponse:
+        type: object
+        properties:
+            status:
+                type: number
+            message:
+                type: string
