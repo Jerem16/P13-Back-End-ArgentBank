@@ -146,7 +146,7 @@ paths:
                     description: Internal Server Error.
                     schema:
                         $ref: "#/definitions/ApiErrorResponse"
-    /user/{id}/accounts/{accountId}/transaction:
+    /user/{id}/accounts/{accountId}/transactions:
         get:
             security:
                 - Bearer: []
@@ -189,7 +189,7 @@ paths:
                     description: Internal Server Error.
                     schema:
                         $ref: "#/definitions/ApiErrorResponse"
-    /user/{id}/accounts/{accountId}/transaction/{transactionId}:
+    /user/{id}/accounts/{accountId}/transactions/{transactionId}:
         put:
             security:
                 - Bearer: []
