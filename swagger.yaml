@@ -69,7 +69,7 @@ paths:
                 "200":
                     description: User profile retrieved successfully
                     schema:
-                        $ref: "#/definitions/ApiResponse"
+                        $ref: "#/definitions/User"
                 "400":
                     description: Invalid Fields
                 "500":
@@ -92,15 +92,15 @@ paths:
                 - application/json
             responses:
                 "200":
-                    description: User profile retrieved successfully
+                    description: User profile updated successfully
                     schema:
-                        $ref: "#/definitions/ApiResponse"
+                        $ref: "#/definitions/UserProfile"
                 "400":
                     description: Invalid Fields
                 "500":
                     description: Internal Server Error
-    /{id}/accounts:
-        post:
+    /user/{id}/accounts:
+        get:
             security:
                 - Bearer: []
             tags:
@@ -122,7 +122,7 @@ paths:
                   description: The user ID
             responses:
                 "200":
-                    description: User accounts retrieved successfully.
+                    description: User accounts retrieved successfully
                     schema:
                         type: object
                         properties:
@@ -133,7 +133,7 @@ paths:
                             body:
                                 type: array
                                 items:
-                                    $ref: "#/definitions/UserAccountDetail" # Correction ici
+                                    $ref: "#/definitions/UserAccount"
                 "401":
                     description: The request requires user authentication.
                     schema:
@@ -146,8 +146,8 @@ paths:
                     description: Internal Server Error.
                     schema:
                         $ref: "#/definitions/ApiErrorResponse"
-    /{id}/{accountId}/transactions:
-        post:
+    /user/{id}/accounts/{accountId}/transaction:
+        get:
             security:
                 - Bearer: []
             tags:
@@ -155,6 +155,11 @@ paths:
             summary: Get a specific account and view transactions
             description: Retrieve a specific user account along with its associated transactions
             parameters:
+                - in: header
+                  name: Authorization
+                  type: string
+                  required: true
+                  description: Bearer token for authentication.
                 - in: path
                   name: id
                   required: true
@@ -171,7 +176,7 @@ paths:
                 "200":
                     description: Transaction retrieved successfully
                     schema:
-                        $ref: "#/definitions/UserAccountTransaction"
+                        $ref: "#/definitions/UserAccountDetail"
                 "401":
                     description: The request requires user authentication.
                     schema:
@@ -184,7 +189,7 @@ paths:
                     description: Internal Server Error.
                     schema:
                         $ref: "#/definitions/ApiErrorResponse"
-    /{id}/{accountId}/{transactionId}:
+    /user/{id}/accounts/{accountId}/transaction/{transactionId}:
         put:
             security:
                 - Bearer: []
@@ -196,10 +201,15 @@ paths:
                 - application/json
             parameters:
                 - in: path
+                  name: id
+                  required: true
+                  type: string
+                  description: The user ID
+                - in: path
                   name: accountId
                   required: true
                   type: string
-                  description: The ID of the account containing the transaction.
+                  description: The account ID
                 - in: path
                   name: transactionId
                   required: true
@@ -212,7 +222,7 @@ paths:
                   description: Bearer token for authentication.
                 - in: body
                   name: body
-                  description: Update a transaction note.
+                  description: Update a transaction note and category
                   required: true
                   schema:
                       type: object
@@ -234,7 +244,7 @@ paths:
                             message:
                                 type: string
                             body:
-                                $ref: "#/definitions/UserAccountTransaction"
+                                $ref: "#/definitions/UserTransactionDetail"
                 "401":
                     description: The request requires user authentication.
                     schema:
@@ -247,6 +257,11 @@ paths:
                     description: Internal Server Error.
                     schema:
                         $ref: "#/definitions/ApiErrorResponse"
+securityDefinitions:
+    Bearer:
+        type: apiKey
+        name: Authorization
+        in: header
 definitions:
     User:
         properties:
@@ -267,7 +282,7 @@ definitions:
                 description: user public name
             id:
                 type: string
-                description: "user id"
+                description: user secure id
     Login:
         properties:
             email:
@@ -305,11 +320,24 @@ definitions:
         properties:
             id:
                 type: string
-                description: "user id"
-            account:
+                description: user secure id
+            accounts:
                 type: array
                 items:
-                    $ref: "#/definitions/UserAccountDetail"
+                    $ref: "#/definitions/UserAccounts"
+    UserAccounts:
+        type: object
+        properties:
+            accountId:
+                type: string
+                description: "account id"
+            title:
+                type: string
+            amount:
+                type: string
+                format: currency
+            description:
+                type: string
     UserAccountDetail:
         type: object
         properties:
@@ -345,6 +373,14 @@ definitions:
                 format: currency
             type:
                 type: string
+            category:
+                type: string
+            note:
+                type: string
+                description: additional user notes
+    UserTransactionDetail:
+        type: object
+        properties:
             category:
                 type: string
             note:
