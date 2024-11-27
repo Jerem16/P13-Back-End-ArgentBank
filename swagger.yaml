@@ -58,13 +58,21 @@ paths:
                 "500":
                     description: Internal Server Error
     /user/profile:
-        post:
+        get:
             security:
                 - Bearer: []
             tags:
                 - User Module
             summary: User Profile API
             description: API for fetching a user profile
+            parameters:
+                - in: header
+                  name: Authorization
+                  value: 
+                  description: Attach Bearer JWT token
+                  required: true
+            produces:
+                - application/json
             responses:
                 "200":
                     description: User profile retrieved successfully
@@ -82,6 +90,10 @@ paths:
             summary: User Profile API
             description: API for updating a user profile
             parameters:
+                - in: header
+                  name: Authorization
+                  description: Attach Bearer JWT token
+                  required: true
                 - in: body
                   name: body
                   description: Update user profile attributes
@@ -94,7 +106,7 @@ paths:
                 "200":
                     description: User profile updated successfully
                     schema:
-                        $ref: "#/definitions/UserProfile"
+                        $ref: "#/definitions/User"
                 "400":
                     description: Invalid Fields
                 "500":
@@ -107,6 +119,12 @@ paths:
                 - Account Module
             summary: User Accounts API
             description: API for getting accounts
+            parameters:
+                - in: header
+                  name: Authorization
+                  value: 
+                  description: Attach Bearer JWT token
+                  required: true
             produces:
                 - application/json
             parameters:
@@ -258,9 +276,9 @@ paths:
                     schema:
                         $ref: "#/definitions/ApiErrorResponse"
 securityDefinitions:
-    Bearer:
+    Authorization:
         type: apiKey
-        name: Authorization
+        name: Bearer
         in: header
 definitions:
     User:

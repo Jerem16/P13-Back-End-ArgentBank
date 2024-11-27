@@ -8,7 +8,7 @@ This codebase contains the code needed to run the backend for Argent Bank.
 
 Argent Bank uses the following tech stack:
 
-- [Node.js v12](https://nodejs.org/en/)
+- [Node.js v18 or higher](https://nodejs.org/en/)
 - [MongoDB Community Server](https://www.mongodb.com/try/download/community)
 
 Please make sure you have the right versions and download both packages. You can verify this by using the following commands in your terminal:
@@ -20,13 +20,14 @@ node --version
 # Check Mongo version
 mongo --version
 ```
+
 If you are working with several versions of NodeJS, we recommend you install [nvm](https://github.com/nvm-sh/nvm). This tool will allow you to easily manage your NodeJS versions.
 
 -Back
 
 1. node -v
-2. nvm install 12.18
-3. nvm use 12.18
+2. nvm install 21
+3. nvm use 21
 
 ### Instructions
 
@@ -38,12 +39,15 @@ If you are working with several versions of NodeJS, we recommend you install [nv
 ```bash
 # Install dependencies
 npm install
+yarn install
 
 # Start local dev server
 npm run dev:server
+yarn run dev:server
 
 # Populate database with two users
 npm run populate-db
+yarn run populate-db
 ```
 
 Your server should now be running at http://locahost:3001 and you will now have two users in your MongoDB database!
