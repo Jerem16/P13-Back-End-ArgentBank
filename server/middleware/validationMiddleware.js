@@ -10,7 +10,7 @@ const validateLogin = (req, res, next) => {
     // const validateUserSchema = userSchema.validate(req.body);
     const { error } = loginSchema.validate(req.body);
     if (error) {
-        return res.status(567).json({ message: error });
+        return res.status(400).json({ message: error });
     }
 
     next();
@@ -27,7 +27,7 @@ const validateUser = (req, res, next) => {
     // const validateUserSchema = userSchema.validate(req.body);
     const { error } = userSchema.validate(req.body);
     if (error) {
-        return res.status(567).json({ message: error });
+        return res.status(400).json({ message: error });
     }
 
     next();
@@ -40,27 +40,11 @@ const validateUserName = (req, res, next) => {
     // const validateUserSchema = userSchema.validate(req.body);
     const { error } = userSchema.validate(req.body);
     if (error) {
-        return res.status(567).json({ message: error });
+        return res.status(400).json({ message: error });
     }
 
     next();
 };
-// Middleware de validation
-// const validateRequest = (type) => (req, res, next) => {
-//     const schema = schemas[type];
-//     if (!schema) {
-//         return res
-//             .status(500)
-//             .json({ message: "Schéma de validation introuvable." });
-//     }
-
-//     const { error } = schema.validate(req.body);
-//     if (error) {
-//         return res.status(400).json({ message: error.details[0].message });
-//     }
-
-//     next();
-// };
 
 module.exports = {
     validateLogin,

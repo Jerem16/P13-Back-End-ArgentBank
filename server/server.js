@@ -38,6 +38,7 @@ const limiter = rateLimit({
     max: 100, // Limite de 100 requêtes par IP
     message: "Trop de requêtes depuis cette IP, veuillez réessayer plus tard.",
 });
+
 app.use("/api/", limiter);
 
 // Ajouter Morgan pour la journalisation
@@ -47,42 +48,8 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const validateLogin = (req, res, next) => {
-    const loginSchema = Joi.object({
-        email: Joi.string().email().required(),
-        password: Joi.string().min(6).required(),
-    });
-
-    // const validateUserSchema = userSchema.validate(req.body);
-    const { error } = loginSchema.validate(req.body);
-    if (error) {
-        return res.status(567).json({ message: error });
-    }
-
-    next();
-};
-const validateUser = (req, res, next) => {
-    const userSchema = Joi.object({
-        firstName: Joi.string().alphanum().min(2).max(30).required(),
-        lastName: Joi.string().alphanum().min(2).max(30).required(),
-        email: Joi.string().email().required(),
-        password: Joi.string().min(6).required(),
-        username: Joi.string().alphanum().min(3).max(30).required(),
-    });
-
-    // const validateUserSchema = userSchema.validate(req.body);
-    const { error } = userSchema.validate(req.body);
-    if (error) {
-        return res.status(567).json({ message: error });
-    }
-
-    next();
-};
 // Définir des routes personnalisées
 app.use("/api/v1/user", require("./routes/userRoutes"));
-// app.use("/api/v1/user/profile", require("./routes/userRoutes"));
-// Handle custom routes
-// app.use("/api/v1/user", require("./routes/userRoutes"));
 
 // API Documentation
 if (process.env.NODE_ENV !== "production") {
