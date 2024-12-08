@@ -29,8 +29,8 @@ paths:
                     description: Login Successfully
                     schema:
                         $ref: "#/definitions/LoginResponse"
-                "400":
-                    description: Invalid Fields
+                "401":
+                    description: Invalid email or password
                 "500":
                     description: Internal Server Error
     /user/signup:
@@ -49,7 +49,7 @@ paths:
             produces:
                 - application/json
             responses:
-                "200":
+                "201":
                     description: Signup Successfully
                     schema:
                         $ref: "#/definitions/ApiResponse"
