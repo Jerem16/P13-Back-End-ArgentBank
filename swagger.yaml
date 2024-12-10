@@ -119,12 +119,6 @@ paths:
                 - Account Module
             summary: User Accounts API
             description: API for getting accounts
-            parameters:
-                - in: header
-                  name: Authorization
-                  value: 
-                  description: Attach Bearer JWT token
-                  required: true
             produces:
                 - application/json
             parameters:
